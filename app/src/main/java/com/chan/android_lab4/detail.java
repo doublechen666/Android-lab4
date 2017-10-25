@@ -41,11 +41,11 @@ public class detail extends AppCompatActivity {
         dynamic_filter.addAction(DYNAMICACTION);
         registerReceiver(dynamicReceiver, dynamic_filter);//注册动态广播,不需要在Manifest中注册了
 
-        Bundle extras = getIntent().getExtras();
+        Bundle extras = this.getIntent().getExtras();
         if(extras != null)
         {
             data = extras.getString("goodsName");
-//            Toast.makeText()
+            Toast.makeText(this, data, Toast.LENGTH_LONG).show();
             for(int i = 0; i < Informations.size(); i++)
             {
                 if(Informations.get(i).get("goodName").toString().equals(data))

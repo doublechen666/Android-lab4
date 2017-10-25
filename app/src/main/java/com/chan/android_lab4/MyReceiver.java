@@ -18,7 +18,7 @@ public class MyReceiver extends BroadcastReceiver {
         if(intent.getAction().equals("static_action"))
         {
             Bundle bundle = intent.getExtras();
-//            Toast.makeText(context, bundle.getString("name"), Toast.LENGTH_LONG).show();
+
 
             //获取通知栏管理
             NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -33,7 +33,9 @@ public class MyReceiver extends BroadcastReceiver {
                     .setAutoCancel(true);
             //绑定Intent，点击可以进入某activity
             Intent mIntent = new Intent(context, detail.class);
-            mIntent.putExtra("goodsName", bundle.getString("name"));
+            Bundle send_bundle = new Bundle();
+            send_bundle.putString("goodsName", bundle.getString("name"));
+            mIntent.putExtras(send_bundle);
             PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,0);
             builder.setContentIntent(mPendingIntent);
             //绑定Notification，发送通知请求
