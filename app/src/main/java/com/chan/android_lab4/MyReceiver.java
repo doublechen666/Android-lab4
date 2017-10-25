@@ -33,9 +33,8 @@ public class MyReceiver extends BroadcastReceiver {
                     .setAutoCancel(true);
             //绑定Intent，点击可以进入某activity
             Intent mIntent = new Intent(context, detail.class);
-            Bundle send_bundle = new Bundle();
-            send_bundle.putString("goodsName", bundle.getString("name"));
-            mIntent.putExtras(send_bundle);
+            String chose_name = bundle.getString("name").toString();
+            mIntent.putExtra("goodsName", chose_name);
             PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,0);
             builder.setContentIntent(mPendingIntent);
             //绑定Notification，发送通知请求
