@@ -1,6 +1,7 @@
 package com.chan.android_lab4;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,9 +24,11 @@ public class detail extends AppCompatActivity {
     String data = null;
     String choiceName = null;
     String choicePrice = null;
+    String DYNAMICACTION = "dynamic_action";
     int item_NO = -1;
     int count = 0;
     List<Map<String,Object>> Informations = new ArrayList<>();
+    DynamicReceiver dynamicReceiver = new DynamicReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +37,15 @@ public class detail extends AppCompatActivity {
 
         initInformation();
 
+        IntentFilter dynamic_filter = new IntentFilter();
+        dynamic_filter.addAction(DYNAMICACTION);
+        registerReceiver(dynamicReceiver, dynamic_filter);//注册动态广播,不需要在Manifest中注册了
+
         Bundle extras = getIntent().getExtras();
         if(extras != null)
         {
             data = extras.getString("goodsName");
+//            Toast.makeText()
             for(int i = 0; i < Informations.size(); i++)
             {
                 if(Informations.get(i).get("goodName").toString().equals(data))
@@ -70,6 +78,8 @@ public class detail extends AppCompatActivity {
                 intent.putExtra("price", choicePrice);
                 intent.putExtra("count", temp_count);
                 setResult(RESULT_OK, intent);
+
+                unregisterReceiver(dynamicReceiver);//注销动态广播
                 finish();
             }
         });
@@ -100,7 +110,14 @@ public class detail extends AppCompatActivity {
             public void onClick(View view) {
                 choiceName = Informations.get(item_NO).get("goodName").toString();
                 choicePrice = Informations.get(item_NO).get("Price").toString();
+
                 Toast.makeText(detail.this,"商品已添加到购物车",Toast.LENGTH_SHORT).show();
+
+                Bundle add_goods_bundle = new Bundle();
+                add_goods_bundle.putString("name", choiceName);
+                Intent intentBroadcast = new Intent(DYNAMICACTION);
+                intentBroadcast.putExtras(add_goods_bundle);
+                sendBroadcast(intentBroadcast);
             }
         });
 
@@ -125,6 +142,8 @@ public class detail extends AppCompatActivity {
         intent.putExtra("price", choicePrice);
         intent.putExtra("count", temp_count);
         setResult(RESULT_OK, intent);
+
+        unregisterReceiver(dynamicReceiver);//注销动态广播
         finish();
     }
 
