@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 public class DynamicReceiver extends BroadcastReceiver {
@@ -23,7 +24,7 @@ public class DynamicReceiver extends BroadcastReceiver {
             //获取通知栏管理
             NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             //实例化通知栏构造器
-            Notification.Builder builder = new Notification.Builder(context);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             //对builder进行配置
             builder.setContentTitle("马上下单")
                     .setContentText(bundle.getString("name")+"已添加到购物车")
@@ -33,11 +34,12 @@ public class DynamicReceiver extends BroadcastReceiver {
                     .setAutoCancel(true);
             //绑定Intent，点击可以进入某activity
             Intent mIntent = new Intent(context, MainActivity.class);
-            PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,0);
+            mIntent.putExtra("in_to_shopping_list", "go");
+            PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(mPendingIntent);
             //绑定Notification，发送通知请求
             Notification notify=builder.build();
-            manager.notify(1,notify);
+            manager.notify(0,notify);
         }
     }
 }

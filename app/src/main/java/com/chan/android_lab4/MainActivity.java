@@ -2,6 +2,8 @@ package com.chan.android_lab4;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.preference.PreferenceFragment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,11 +32,21 @@ public class MainActivity extends AppCompatActivity {
     List<Map<String, Object>> ShoppingList = new ArrayList<>();
     List<Map<String, Object>> GoodsList = new ArrayList<>();
     SimpleAdapter simpleAdapter;
+    CommonAdapter goodslistAdapter;
+    ListView shoppingListView;
+    RecyclerView goodsRecyclerView;
+    FloatingActionButton SwitchBtn;
+    DynamicReceiver dynamicReceiver = new DynamicReceiver();
+    String DYNAMICACTION = "dynamic_action";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        IntentFilter dynamic_filter = new IntentFilter();
+        dynamic_filter.addAction(DYNAMICACTION);
+        registerReceiver(dynamicReceiver, dynamic_filter);//注册动态广播,不需要在Manifest中注册了
 
         initShoppingList();//初始化购物车需要的List
         initGoodsList();//初始化商品列表
@@ -58,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         //购物车，使用ListView和SimpleAdapter
-        final ListView shoppingListView = (ListView) findViewById(R.id.shoppinglist);
+        shoppingListView = (ListView) findViewById(R.id.shoppinglist);
         simpleAdapter = new SimpleAdapter(this, ShoppingList,R.layout.shoppinglist_layout,new String[]{"abbr","name", "price"},new int[]{R.id.abbr,R.id.name,R.id.price});
         shoppingListView.setAdapter(simpleAdapter);
         shoppingListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -93,10 +105,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        final RecyclerView goodsRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        goodsRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         goodsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //商品列表的Adapter
-        final CommonAdapter goodslistAdapter = new CommonAdapter(this, R.layout.item, GoodsList)
+        goodslistAdapter = new CommonAdapter(this, R.layout.item, GoodsList)
         {
             @Override
             public void convert(ViewHolder holder, Map<String, Object> s) {
@@ -132,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        final FloatingActionButton SwitchBtn = (FloatingActionButton)findViewById(R.id.switch_button);
+        SwitchBtn = (FloatingActionButton)findViewById(R.id.switch_button);
         SwitchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +191,34 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    //需要更新this的Intent
+    @Override
+    protected void onNewIntent(Intent intent) {
+        // TODO Auto-generated method stub
+        super.onNewIntent(intent);
+
+        Bundle extras = intent.getExtras();
+        if(extras != null)
+        {
+            Toast.makeText(MainActivity.this,"onStart",Toast.LENGTH_SHORT).show();
+            if(extras.getString("in_to_shopping_list").equals("go"))
+            {
+                goodsRecyclerView.setVisibility(View.GONE);
+                shoppingListView.setVisibility(View.VISIBLE);
+                SwitchBtn.setImageResource(R.drawable.mainpage);
+            }
+        }
+
+//        setIntent(intent);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        unregisterReceiver(dynamicReceiver);
+    }
+
     //购物车需要的List在此初始化
     private void initShoppingList()
     {
