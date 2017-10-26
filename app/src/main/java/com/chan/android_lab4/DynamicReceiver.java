@@ -6,6 +6,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ public class DynamicReceiver extends BroadcastReceiver {
 
 //            Toast.makeText(context, bundle.getString("name"), Toast.LENGTH_LONG).show();
 
+            Bitmap bm = BitmapFactory.decodeResource(Resources.getSystem(), bundle.getInt("icon"));
             //获取通知栏管理
             NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             //实例化通知栏构造器
@@ -30,7 +34,8 @@ public class DynamicReceiver extends BroadcastReceiver {
                     .setContentText(bundle.getString("name")+"已添加到购物车")
                     .setTicker("you have a new message~")
                     .setWhen(System.currentTimeMillis())
-                    .setSmallIcon(R.drawable.ferrero)
+                    .setLargeIcon(bm)
+                    .setSmallIcon(bundle.getInt("icon"))
                     .setAutoCancel(true);
             //绑定Intent，点击可以进入某activity
             Intent mIntent = new Intent(context, MainActivity.class);
