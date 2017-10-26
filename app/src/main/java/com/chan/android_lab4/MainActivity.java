@@ -17,6 +17,10 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        EventBus.getDefault().register(this);
 
         IntentFilter dynamic_filter = new IntentFilter();
         dynamic_filter.addAction(DYNAMICACTION);
@@ -164,33 +170,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }//end OnCreate
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(requestCode == 1)
-        {
-            if(resultCode == RESULT_OK)
-            {
-                String rev_name = data.getStringExtra("name");
-                String rev_price = data.getStringExtra("price");
-                String rev_count = data.getStringExtra("count");
-                if(rev_name != null && rev_price != null)
-                {
-                    int count = Integer.parseInt(rev_count);
-                    for(int i = 0; i < count; i++)
-                    {
-                        Map<String,Object> temp = new LinkedHashMap<>();
-                        temp.put("abbr", rev_name.substring(0,1));
-                        temp.put("name", rev_name);
-                        temp.put("price", rev_price);
-                        ShoppingList.add(temp);
-                        simpleAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        }
-
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+//    {
+//        if(requestCode == 1)
+//        {
+//            if(resultCode == RESULT_OK)
+//            {
+//                String rev_name = data.getStringExtra("name");
+//                String rev_price = data.getStringExtra("price");
+//                String rev_count = data.getStringExtra("count");
+//                if(rev_name != null && rev_price != null)
+//                {
+//                    int count = Integer.parseInt(rev_count);
+//                    for(int i = 0; i < count; i++)
+//                    {
+//                        Map<String,Object> temp = new LinkedHashMap<>();
+//                        temp.put("abbr", rev_name.substring(0,1));
+//                        temp.put("name", rev_name);
+//                        temp.put("price", rev_price);
+//                        ShoppingList.add(temp);
+//                        simpleAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
 
     //需要更新this的Intent
     @Override
@@ -210,13 +216,29 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-//        setIntent(intent);
+        setIntent(intent);
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
         unregisterReceiver(dynamicReceiver);
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MessageEvent event) {
+        String rev_name = event.getNameMsg();
+        String rev_price = event.getPriceMsg();
+        if(rev_name != null && rev_price != null)
+        {
+            Map<String,Object> temp = new LinkedHashMap<>();
+            temp.put("abbr", rev_name.substring(0,1));
+            temp.put("name", rev_name);
+            temp.put("price", rev_price);
+            ShoppingList.add(temp);
+            simpleAdapter.notifyDataSetChanged();
+        }
     }
 
     //购物车需要的List在此初始化

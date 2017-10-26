@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.chan.android_lab4.R;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,12 +69,12 @@ public class detail extends AppCompatActivity {
         BackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String temp_count = Integer.toString(count);
-                Intent intent = new Intent();
-                intent.putExtra("name",choiceName);
-                intent.putExtra("price", choicePrice);
-                intent.putExtra("count", temp_count);
-                setResult(RESULT_OK, intent);
+//                String temp_count = Integer.toString(count);
+//                Intent intent = new Intent();
+//                intent.putExtra("name",choiceName);
+//                intent.putExtra("price", choicePrice);
+//                intent.putExtra("count", temp_count);
+//                setResult(RESULT_OK, intent);
                 finish();
             }
         });
@@ -112,6 +114,8 @@ public class detail extends AppCompatActivity {
                 Intent intentBroadcast = new Intent(DYNAMICACTION);
                 intentBroadcast.putExtras(add_goods_bundle);
                 sendBroadcast(intentBroadcast);
+
+                EventBus.getDefault().post(new MessageEvent(choiceName, choicePrice));
             }
         });
 
@@ -130,26 +134,12 @@ public class detail extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        String temp_count = Integer.toString(count);
-        Intent intent = new Intent();
-        intent.putExtra("name",choiceName);
-        intent.putExtra("price", choicePrice);
-        intent.putExtra("count", temp_count);
-        setResult(RESULT_OK, intent);
-
-        finish();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-
-        String temp_count = Integer.toString(count);
-        Intent intent = new Intent();
-        intent.putExtra("name",choiceName);
-        intent.putExtra("price", choicePrice);
-        intent.putExtra("count", temp_count);
-        setResult(RESULT_OK, intent);
+//        String temp_count = Integer.toString(count);
+//        Intent intent = new Intent();
+//        intent.putExtra("name",choiceName);
+//        intent.putExtra("price", choicePrice);
+//        intent.putExtra("count", temp_count);
+//        setResult(RESULT_OK, intent);
 
         finish();
     }
