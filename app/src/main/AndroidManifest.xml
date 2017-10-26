@@ -20,7 +20,7 @@
         <activity android:name=".detail" />
 
         <receiver
-            android:name=".MyReceiver"
+            android:name=".StaticReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

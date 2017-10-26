@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //注册EventBus订阅
         EventBus.getDefault().register(this);
 
         IntentFilter dynamic_filter = new IntentFilter();
@@ -57,11 +58,16 @@ public class MainActivity extends AppCompatActivity {
         initShoppingList();//初始化购物车需要的List
         initGoodsList();//初始化商品列表
 
+        //发送随机推荐
+        final int[] imageID = {R.mipmap.enchatedforest, R.mipmap.arla, R.mipmap.devondale, R.mipmap.kindle,
+                R.mipmap.waitrose, R.mipmap.mcvitie, R.mipmap.ferrero, R.mipmap.maltesers, R.mipmap.lindt,
+                R.mipmap.borggreve};
         Random random = new Random();
         int noti_choice = random.nextInt(GoodsList.size());
         Bundle random_recommand_bundle = new Bundle();
         random_recommand_bundle.putString("name", GoodsList.get(noti_choice).get("name").toString());
         random_recommand_bundle.putString("price", GoodsList.get(noti_choice).get("price").toString());
+        random_recommand_bundle.putInt("icon", imageID[noti_choice]);
         Intent intentBroadcast = new Intent("static_action");
         intentBroadcast.putExtras(random_recommand_bundle);
         sendBroadcast(intentBroadcast);
@@ -105,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     String chose_name = ShoppingList.get(i).get("name").toString();
                     Intent intent = new Intent(MainActivity.this, detail.class);
                     intent.putExtra("goodsName", chose_name);
-                    startActivityForResult(intent, 1);
+                    startActivity(intent);
                 }
             }
         });
@@ -170,34 +176,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }//end OnCreate
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-//    {
-//        if(requestCode == 1)
-//        {
-//            if(resultCode == RESULT_OK)
-//            {
-//                String rev_name = data.getStringExtra("name");
-//                String rev_price = data.getStringExtra("price");
-//                String rev_count = data.getStringExtra("count");
-//                if(rev_name != null && rev_price != null)
-//                {
-//                    int count = Integer.parseInt(rev_count);
-//                    for(int i = 0; i < count; i++)
-//                    {
-//                        Map<String,Object> temp = new LinkedHashMap<>();
-//                        temp.put("abbr", rev_name.substring(0,1));
-//                        temp.put("name", rev_name);
-//                        temp.put("price", rev_price);
-//                        ShoppingList.add(temp);
-//                        simpleAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//            }
-//        }
-//
-//    }
-
     //需要更新this的Intent
     @Override
     protected void onNewIntent(Intent intent) {
@@ -207,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         if(extras != null)
         {
-            Toast.makeText(MainActivity.this,"onStart",Toast.LENGTH_SHORT).show();
             if(extras.getString("in_to_shopping_list").equals("go"))
             {
                 goodsRecyclerView.setVisibility(View.GONE);

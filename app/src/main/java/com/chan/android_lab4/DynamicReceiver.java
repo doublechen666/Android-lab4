@@ -24,7 +24,7 @@ public class DynamicReceiver extends BroadcastReceiver {
 
 //            Toast.makeText(context, bundle.getString("name"), Toast.LENGTH_LONG).show();
 
-            Bitmap bm = BitmapFactory.decodeResource(Resources.getSystem(), bundle.getInt("icon"));
+            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), bundle.getInt("icon"));
             //获取通知栏管理
             NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
             //实例化通知栏构造器
@@ -33,9 +33,8 @@ public class DynamicReceiver extends BroadcastReceiver {
             builder.setContentTitle("马上下单")
                     .setContentText(bundle.getString("name")+"已添加到购物车")
                     .setTicker("you have a new message~")
-                    .setWhen(System.currentTimeMillis())
                     .setLargeIcon(bm)
-                    .setSmallIcon(bundle.getInt("icon"))
+                    .setSmallIcon(R.mipmap.shoplist)
                     .setAutoCancel(true);
             //绑定Intent，点击可以进入某activity
             Intent mIntent = new Intent(context, MainActivity.class);

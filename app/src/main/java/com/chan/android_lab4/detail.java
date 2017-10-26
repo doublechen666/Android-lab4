@@ -52,9 +52,9 @@ public class detail extends AppCompatActivity {
             }
         }
 
-        int[] imageID = {R.drawable.enchatedforest, R.drawable.arla, R.drawable.devondale, R.drawable.kindle,
-                R.drawable.waitrose, R.drawable.mcvitie, R.drawable.ferrero, R.drawable.maltesers, R.drawable.lindt,
-                R.drawable.borggreve};
+        final int[] imageID = {R.mipmap.enchatedforest, R.mipmap.arla, R.mipmap.devondale, R.mipmap.kindle,
+                R.mipmap.waitrose, R.mipmap.mcvitie, R.mipmap.ferrero, R.mipmap.maltesers, R.mipmap.lindt,
+                R.mipmap.borggreve};
         ImageView goodsimage = (ImageView)findViewById(R.id.image_detail);
         int resId = imageID[item_NO];
         goodsimage.setImageResource(resId);
@@ -111,6 +111,7 @@ public class detail extends AppCompatActivity {
 
                 Bundle add_goods_bundle = new Bundle();
                 add_goods_bundle.putString("name", choiceName);
+                add_goods_bundle.putInt("icon", imageID[item_NO]);
                 Intent intentBroadcast = new Intent(DYNAMICACTION);
                 intentBroadcast.putExtras(add_goods_bundle);
                 sendBroadcast(intentBroadcast);
