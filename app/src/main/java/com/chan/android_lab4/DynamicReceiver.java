@@ -39,11 +39,11 @@ public class DynamicReceiver extends BroadcastReceiver {
             //绑定Intent，点击可以进入某activity
             Intent mIntent = new Intent(context, MainActivity.class);
             mIntent.putExtra("in_to_shopping_list", "go");
-            PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent mPendingIntent = PendingIntent.getActivity(context,0,mIntent,PendingIntent.FLAG_ONE_SHOT);
             builder.setContentIntent(mPendingIntent);
             //绑定Notification，发送通知请求
             Notification notify=builder.build();
-            manager.notify(0,notify);
+            manager.notify((int)System.currentTimeMillis(),notify);//使用时间标记通知，显示多条通知
         }
     }
 }

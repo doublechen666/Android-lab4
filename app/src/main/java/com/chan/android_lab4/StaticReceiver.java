@@ -32,7 +32,7 @@ public class StaticReceiver extends BroadcastReceiver {
                     .setContentText(bundle.getString("name")+"仅售"+bundle.getString("price"))
                     .setTicker("you have a new message~")
                     .setWhen(System.currentTimeMillis())
-                    .setSmallIcon(R.drawable.shoplist)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setLargeIcon(bm)
                     .setAutoCancel(true);
             //绑定Intent，点击可以进入某activity
