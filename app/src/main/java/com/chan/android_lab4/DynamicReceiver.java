@@ -34,7 +34,7 @@ public class DynamicReceiver extends BroadcastReceiver {
                     .setContentText(bundle.getString("name")+"已添加到购物车")
                     .setTicker("you have a new message~")
                     .setLargeIcon(bm)
-                    .setSmallIcon(R.mipmap.shoplist)
+                    .setSmallIcon(bundle.getInt("icon"))
                     .setAutoCancel(true);
             //绑定Intent，点击可以进入某activity
             Intent mIntent = new Intent(context, MainActivity.class);
